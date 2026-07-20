@@ -103,7 +103,7 @@ function logout() {
 // TODO: wire to real destinations once they exist — reservation flow is the
 // next ClickUp subtask; edit/report/flyers pages aren't built yet.
 function onReserve(id: string) {
-  console.log("reserve", id);
+  router.push(`/reserve/${id}`);
 }
 function onEdit(id: string) {
   console.log("edit", id);
