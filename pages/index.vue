@@ -33,6 +33,8 @@ useHead({
 });
 
 const { request } = useApi();
+const auth = useAuthStore();
+const router = useRouter();
 
 const categories = ref<Category[]>([]);
 const activeCategory = ref<string | null>(null);
@@ -47,6 +49,7 @@ const isLoading = ref(false);
 const isLoadingMore = ref(false);
 
 let searchDebounce: ReturnType<typeof setTimeout> | undefined;
+let isInitializing = true;
 
 async function fetchCategories() {
   const result = await request<CategoriesResponse>("/packages/categories");
@@ -92,6 +95,11 @@ function onSearchInput() {
   searchDebounce = setTimeout(() => fetchPackages(true), 500);
 }
 
+function logout() {
+  auth.clear();
+  router.push("/login");
+}
+
 // TODO: wire to real destinations once they exist — reservation flow is the
 // next ClickUp subtask; edit/report/flyers pages aren't built yet.
 function onReserve(id: string) {
@@ -110,12 +118,19 @@ function onViewFlyers(id: string) {
   console.log("view-flyers", id);
 }
 
-watch(activeCategory, () => fetchPackages(true));
-watch([minPrice, maxPrice], () => fetchPackages(true));
+watch(activeCategory, () => {
+  if (isInitializing) return;
+  fetchPackages(true);
+});
+watch([minPrice, maxPrice], () => {
+  if (isInitializing) return;
+  fetchPackages(true);
+});
 
 onMounted(async () => {
   await fetchCategories();
   await fetchPackages(true);
+  isInitializing = false;
 });
 </script>
 
@@ -133,12 +148,20 @@ onMounted(async () => {
             @input="onSearchInput"
           />
         </div>
-        <button
-          class="lg:hidden rounded-lg border border-stone-200 px-3.5 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50"
-          @click="showFilters = !showFilters"
-        >
-          Filters
-        </button>
+        <div class="flex items-center gap-2">
+          <button
+            class="lg:hidden rounded-lg border border-stone-200 px-3.5 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50"
+            @click="showFilters = !showFilters"
+          >
+            Filters
+          </button>
+          <button
+            class="rounded-lg border border-stone-200 px-3.5 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50"
+            @click="logout"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       <div class="max-w-7xl mx-auto mt-4 flex gap-2 overflow-x-auto pb-1">
