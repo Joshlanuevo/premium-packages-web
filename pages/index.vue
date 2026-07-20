@@ -39,9 +39,6 @@ const router = useRouter();
 const categories = ref<Category[]>([]);
 const activeCategory = ref<string | null>(null);
 const searchQuery = ref("");
-const minPrice = ref<number | null>(null);
-const maxPrice = ref<number | null>(null);
-const showFilters = ref(false);
 
 const items = ref<Record<string, unknown>[]>([]);
 const nextCursor = ref<string | null>(null);
@@ -63,8 +60,6 @@ function buildQuery(cursor?: string) {
   const params = new URLSearchParams();
   if (activeCategory.value) params.set("category", activeCategory.value);
   if (searchQuery.value) params.set("search", searchQuery.value);
-  if (minPrice.value != null) params.set("minPrice", String(minPrice.value));
-  if (maxPrice.value != null) params.set("maxPrice", String(maxPrice.value));
   if (cursor) params.set("cursor", cursor);
   return params.toString();
 }
@@ -122,10 +117,6 @@ watch(activeCategory, () => {
   if (isInitializing) return;
   fetchPackages(true);
 });
-watch([minPrice, maxPrice], () => {
-  if (isInitializing) return;
-  fetchPackages(true);
-});
 
 onMounted(async () => {
   await fetchCategories();
@@ -150,12 +141,6 @@ onMounted(async () => {
         </div>
         <div class="flex items-center gap-2">
           <button
-            class="lg:hidden rounded-lg border border-stone-200 px-3.5 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50"
-            @click="showFilters = !showFilters"
-          >
-            Filters
-          </button>
-          <button
             class="rounded-lg border border-stone-200 px-3.5 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50"
             @click="logout"
           >
@@ -177,23 +162,9 @@ onMounted(async () => {
       </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-6 py-6 flex gap-6">
-      <!-- Filters -->
-      <aside
-        class="w-64 flex-shrink-0 space-y-5"
-        :class="showFilters ? 'block' : 'hidden lg:block'"
-      >
-        <div class="rounded-xl border border-stone-200 bg-white p-4">
-          <p class="text-sm font-semibold text-stone-800 mb-2">Price Range</p>
-          <div class="flex gap-2">
-            <input v-model.number="minPrice" type="number" placeholder="Min" class="w-1/2 rounded-lg border border-stone-200 px-2.5 py-2 text-sm" />
-            <input v-model.number="maxPrice" type="number" placeholder="Max" class="w-1/2 rounded-lg border border-stone-200 px-2.5 py-2 text-sm" />
-          </div>
-        </div>
-      </aside>
-
+    <div class="max-w-7xl mx-auto px-6 py-6">
       <!-- Results -->
-      <section class="flex-1">
+      <section>
         <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           <div v-for="i in 6" :key="i" class="h-[380px] rounded-xl bg-stone-200 animate-pulse" />
         </div>
