@@ -24,6 +24,8 @@ useHead({
   ],
 });
 
+definePageMeta({ layout: false });
+
 const auth = useAuthStore();
 const router = useRouter();
 const { request } = useApi();

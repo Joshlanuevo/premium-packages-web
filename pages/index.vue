@@ -28,10 +28,6 @@ definePageMeta({
   ],
 });
 
-useHead({
-  link: [{ rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" }],
-});
-
 const { request } = useApi();
 const auth = useAuthStore();
 const router = useRouter();
@@ -126,29 +122,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="min-h-screen bg-stone-50 font-sans text-stone-900" style="font-family: 'Inter', system-ui, sans-serif">
-    <header class="bg-white border-b border-stone-200 px-6 py-4">
-      <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 flex-wrap">
-        <img src="/images/gladex-logo.jpg" alt="Gladex" class="h-9 w-auto" />
-        <div class="flex-1 min-w-[200px] max-w-md">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search premium packages…"
-            class="w-full rounded-lg border border-stone-200 px-3.5 py-2.5 text-sm focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-400/15"
-            @input="onSearchInput"
-          />
-        </div>
-        <div class="flex items-center gap-2">
-          <button
-            class="rounded-lg border border-stone-200 px-3.5 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50"
-            @click="logout"
-          >
-            Logout
-          </button>
-        </div>
+  <div>
+    <div class="bg-white border-b border-stone-200 px-6 py-4">
+      <div class="max-w-7xl mx-auto">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search premium packages…"
+          class="w-full max-w-md rounded-lg border border-stone-200 px-3.5 py-2.5 text-sm focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-400/15"
+          @input="onSearchInput"
+        />
       </div>
-
       <div class="max-w-7xl mx-auto mt-4 flex gap-2 overflow-x-auto pb-1">
         <button
           v-for="cat in categories"
@@ -160,8 +144,7 @@ onMounted(async () => {
           {{ cat.name }}
         </button>
       </div>
-    </header>
-
+    </div>
     <div class="max-w-7xl mx-auto px-6 py-6">
       <!-- Results -->
       <section>
@@ -197,5 +180,5 @@ onMounted(async () => {
         </div>
       </section>
     </div>
-  </main>
+  </div>
 </template>
