@@ -92,6 +92,24 @@ function onSearchInput() {
   searchDebounce = setTimeout(() => fetchPackages(true), 500);
 }
 
+// TODO: wire to real destinations once they exist — reservation flow is the
+// next ClickUp subtask; edit/report/flyers pages aren't built yet.
+function onReserve(id: string) {
+  console.log("reserve", id);
+}
+function onEdit(id: string) {
+  console.log("edit", id);
+}
+function onDelete(id: string) {
+  console.log("delete", id);
+}
+function onGenerateReport(id: string) {
+  console.log("generate-report", id);
+}
+function onViewFlyers(id: string) {
+  console.log("view-flyers", id);
+}
+
 watch(activeCategory, () => fetchPackages(true));
 watch([minPrice, maxPrice], () => fetchPackages(true));
 
@@ -162,7 +180,16 @@ onMounted(async () => {
         </div>
 
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          <PremiumPackageCard v-for="pkg in items" :key="pkg.id as string" :package="pkg" />
+          <PremiumPackageCard
+            v-for="pkg in items"
+            :key="pkg.id as string"
+            :package="pkg"
+            @reserve="onReserve"
+            @edit="onEdit"
+            @delete="onDelete"
+            @generate-report="onGenerateReport"
+            @view-flyers="onViewFlyers"
+          />
         </div>
 
         <div v-if="nextCursor" class="flex justify-center mt-8">
